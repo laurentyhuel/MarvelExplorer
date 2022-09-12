@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Marvel Explorer</string>
+    <string name="loading_data">Loading data …</string>
+    <string name="retry">Retry</string>
+    <string name="back">Back</string>
+    <string name="fetch_exception">Failed to load data, check your internet connection</string>
+</resources>
