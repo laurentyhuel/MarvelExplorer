@@ -96,30 +96,6 @@ class CharacterViewModelTest {
         }
     }
 
-//    @Test
-//    fun `WHEN get album by id returns exception THEN collecting flow get exception`() = runTest {
-//
-//        val albumId = 5L
-//        coEvery { characterUseCase.getCharacterById(albumId) } returns flow {
-//            emit(
-//                ResultException(
-//                    TimeoutException()
-//                )
-//            )
-//        }
-//
-//        characterViewModel.album.test {
-//            val resultLoading = awaitItem()
-//            assertTrue(resultLoading is ResourceLoading)
-//
-//            characterViewModel.setCharacterId(albumId)
-//
-//            val result = awaitItem()
-//            assertTrue(result is ResourceError)
-//        }
-//
-//    }
-
     private fun createCharacterModel(id: Int) = CharacterModel(
         id,
         "Name $id",

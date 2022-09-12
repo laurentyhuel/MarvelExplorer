@@ -127,23 +127,21 @@ private fun CharacterHeader(character: CharacterUi) {
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(10.dp)
     ) {
         AsyncImage(
             model = character.thumbnailUrl,
             contentDescription = "",
             modifier = Modifier
-                .padding(10.dp)
                 .fillMaxWidth()
-                .size(200.dp)
+                .aspectRatio(1f)
         )
         Text(
             text = character.name,
             textAlign = TextAlign.Justify,
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.titleLarge,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(10.dp)
+                .padding(20.dp)
         )
     }
 }

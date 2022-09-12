@@ -7,7 +7,6 @@ import com.lyh.marvelexplorer.domain.model.CharacterModel
 import com.lyh.marvelexplorer.domain.repository.ICharacterRepository
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.*

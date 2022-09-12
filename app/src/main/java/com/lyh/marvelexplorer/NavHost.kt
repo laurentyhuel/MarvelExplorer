@@ -7,7 +7,6 @@ import com.lyh.marvelexplorer.feature.character.nav.CharacterDestination
 import com.lyh.marvelexplorer.feature.character.nav.CharacterListNavigation
 import com.lyh.marvelexplorer.feature.character.nav.characterGraph
 import com.lyh.marvelexplorer.feature.core.NavigationDestination
-import timber.log.Timber
 
 @Composable
 fun NavHost(

@@ -2,7 +2,6 @@ package com.lyh.marvelexplorer.domain
 
 import com.lyh.marvelexplorer.domain.model.SquadCharacterModel
 import com.lyh.marvelexplorer.domain.repository.ISquadCharacterRepository
-import kotlinx.coroutines.flow.Flow
 
 class SquadCharacterUseCase(private val squadCharacterRepository: ISquadCharacterRepository) {
 

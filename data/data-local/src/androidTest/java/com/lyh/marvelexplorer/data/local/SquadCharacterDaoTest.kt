@@ -38,7 +38,7 @@ class SquadCharacterDaoTest {
         squadCharacterDao.getSquadCharacters().test {
             val squadCharacterInserted = awaitItem()
             assertEquals(1, squadCharacterInserted.size)
-            // Album is a data class, so check is made on properties, and not instance :)
+            // Character is a data class, so check is made on properties, and not instance :)
             assertEquals(squadCharacterInserted.first(), squadCharacter1)
         }
 

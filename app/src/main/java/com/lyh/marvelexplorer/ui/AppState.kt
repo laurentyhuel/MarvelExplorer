@@ -8,7 +8,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.lyh.marvelexplorer.feature.core.NavigationDestination
-import timber.log.Timber
 
 @Composable
 fun rememberAppState(

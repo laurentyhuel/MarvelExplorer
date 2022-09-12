@@ -2,8 +2,8 @@
     <string name="get_character_exception">Failed to get character data</string>
     <string name="character">Character</string>
     <string name="missing_description">No description available</string>
-    <string name="quad_fire">Fire squad</string>
-    <string name="squad_recruit">Recruit squad</string>
+    <string name="quad_fire">🔥 Fire from Squad</string>
+    <string name="squad_recruit">💪 Recruit to Squad</string>
     <string name="my_squad">My squad:</string>
     <string name="is_present_error">Cannot recruit or fire for the moment</string>
     <string name="my_squad_empty">No one on your squad at the moment, you have to recruit !</string>

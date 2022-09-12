@@ -5,11 +5,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -149,16 +152,26 @@ private fun SquadCharacterItem(
     Card(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
         onClick = { onNavigateToCharacter(squadCharacter.id.toString()) },
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.width(90.dp)
     ) {
+        Column {
+            AsyncImage(
+                model = squadCharacter.thumbnailUrl,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(80.dp)
+                    .padding(5.dp)
+                    .clip(CircleShape)
+            )
+            Text(
+                text = squadCharacter.name,
+                style = MaterialTheme.typography.labelSmall,
+                modifier = Modifier.padding(start = 5.dp, end = 5.dp)
+            )
+        }
 
-        AsyncImage(
-            model = squadCharacter.thumbnailUrl,
-            contentDescription = null,
-            modifier = Modifier
-                .size(80.dp)
-                .padding(10.dp)
-        )
+        
     }
 }
 
@@ -183,6 +196,7 @@ private fun CharacterList(
             LazyColumn(
                 modifier = modifier
                     .fillMaxSize()
+                    .padding(10.dp)
             ) {
                 itemsIndexed(lazyPagingItems) { _, item ->
                     item?.let {
@@ -205,21 +219,28 @@ fun CharacterItemCard(
     onClick: (characterId: String) -> Unit,
 ) {
     Card(
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+        shape = CardDefaults.elevatedShape,
         onClick = { onClick(characterUi.id.toString()) },
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(10.dp)
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp)) {
+
             AsyncImage(
                 model = characterUi.thumbnailUrl,
                 contentDescription = null,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(130.dp)
-                    .padding(10.dp)
+                    .size(60.dp)
+                    .clip(CircleShape)
             )
             Text(
                 characterUi.name,
-                style = MaterialTheme.typography.labelSmall,
+                style = MaterialTheme.typography.labelMedium,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(10.dp)
