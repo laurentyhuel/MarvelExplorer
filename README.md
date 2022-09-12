@@ -1,10 +1,8 @@
 # Marvel Explorer
 
-Marvel Explorer project shows modern Android development, following Android design and development
-best practices. It's inspired by [NowInAndroid](https://github.com/android/nowinandroid) project
-and [Guide to app architecture](https://developer.android.com/topic/architecture).
+Marvel Explorer project shows modern Android development, following Android design and development best practices. It's inspired by [NowInAndroid](https://github.com/android/nowinandroid) project and [Guide to app architecture](https://developer.android.com/topic/architecture).
 
-Application use data from [Marvel API] (https://developer.marvel.com/documentation/getting_started)
+Application use data from [Marvel API](https://developer.marvel.com/documentation/getting_started)
 
 ## _To Do improvements_
 
@@ -13,9 +11,9 @@ Application use data from [Marvel API] (https://developer.marvel.com/documentati
 - Put `com.lyh.marvelexplorer.feature.character.util` classes in a new module `feature-code-test`
 - Create a custom Gradle Plugin for `java-library` module, and use it instead of `com.android.library` in modules don't have Android dependencies as `data-remote`, `data`, ...
 - Create a custom Gradle Plugin for `compose` module
-- Manage [large screen] (https://developer.android.com/guide/topics/large-screens/get-started-with-large-screens) 
-- Use `SavedStateHandle` for passing parameters to screen whe [bug] (https://github.com/InsertKoinIO/koin/issues/1350) fixed 
-- MinSDK set 24 instead of 21 because of this bug : [issue 171666278] (https://issuetracker.google.com/issues/171666278) & [issue 195786468] (https://issuetracker.google.com/issues/195786468). Investigate how to workaround this.
+- Manage [large screen](https://developer.android.com/guide/topics/large-screens/get-started-with-large-screens) 
+- Use `SavedStateHandle` for passing parameters to screen whe [bug](https://github.com/InsertKoinIO/koin/issues/1350) fixed 
+- MinSDK set 24 instead of 21 because of this bug : [issue 171666278](https://issuetracker.google.com/issues/171666278) & [issue 195786468](https://issuetracker.google.com/issues/195786468). Investigate how to workaround this.
 - implements retry when network request failed
 - improve UI in landscape mode
 - Use Flow.combine to have a single state per screens
@@ -28,7 +26,7 @@ publicApiKey="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 privateApiKey="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 ```
 
-To get an API Key, please register to [Marvel Developer portal] (https://developer.marvel.com/account), and follow `Get a key`
+To get an API Key, please register to [Marvel Developer portal](https://developer.marvel.com/account), and follow `Get a key`
 
 ## Architecture
 
@@ -75,8 +73,7 @@ UI use Jetpack Compose.
 ## Build system
 
 - Project uses Gradle build system with Kotlin DSL (kts).
-- Catalog (with versions) of libraries and plugins is in `gradle/libs.versions.toml` see
-  this [article](https://proandroiddev.com/gradle-version-catalogs-for-an-awesome-dependency-management-f2ba700ff894)
+- Catalog (with versions) of libraries and plugins is in `gradle/libs.versions.toml` see this [article](https://proandroiddev.com/gradle-version-catalogs-for-an-awesome-dependency-management-f2ba700ff894)
 - Common gradle configuration is shared in custom gradle plugins in build-logic
 
 ## Libraries
