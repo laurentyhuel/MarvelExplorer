@@ -28,19 +28,7 @@ class CharacterViewModel(
 //        savedStateHandle[CharacterDestination.characterIdArg]
 //    )
 
-    fun recruitSquadCharacter(characterUi: CharacterUi) = viewModelScope.launch {
-        squadCharacterUseCase.addSquadCharacter(characterUi.toSquadModel())
-    }
-
-    fun fireSquadCharacter(characterUi: CharacterUi) = viewModelScope.launch {
-        squadCharacterUseCase.deleteSquadCharacter(characterUi.toSquadModel())
-    }
-
     private val characterIdTrigger: MutableSharedFlow<Int> = MutableSharedFlow(replay = 1)
-
-    fun setCharacterId(id: Int) = viewModelScope.launch {
-        characterIdTrigger.emit(id)
-    }
 
     val isCharacterPresentInSquad: StateFlow<Boolean?> =
         characterIdTrigger.flatMapLatest { id ->
@@ -58,6 +46,18 @@ class CharacterViewModel(
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = ResourceLoading()
     )
+
+    fun recruitSquadCharacter(characterUi: CharacterUi) = viewModelScope.launch {
+        squadCharacterUseCase.addSquadCharacter(characterUi.toSquadModel())
+    }
+
+    fun fireSquadCharacter(characterUi: CharacterUi) = viewModelScope.launch {
+        squadCharacterUseCase.deleteSquadCharacter(characterUi.toSquadModel())
+    }
+
+    fun setCharacterId(id: Int) = viewModelScope.launch {
+        characterIdTrigger.emit(id)
+    }
 
     private fun getCharacterFlow(id: Int?): Flow<Resource<CharacterUi>> =
         if (id == null) {

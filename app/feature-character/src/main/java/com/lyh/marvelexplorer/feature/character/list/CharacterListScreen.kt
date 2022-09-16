@@ -122,7 +122,7 @@ private fun SquadCharacterList(
                     LazyRow(modifier = Modifier
                         .fillMaxWidth()
                         .padding(10.dp)) {
-                        items(squadCharactersResource.data) {
+                        items(items = squadCharactersResource.data, key = {it.id}) {
                             SquadCharacterItem(
                                 squadCharacter = it,
                                 onNavigateToCharacter = onNavigateToCharacter
