@@ -1,13 +1,16 @@
 package com.lyh.marvelexplorer.feature.character
 
+import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import com.lyh.marvelexplorer.domain.CharacterUseCase
 import com.lyh.marvelexplorer.domain.SquadCharacterUseCase
+import com.lyh.marvelexplorer.domain.core.ResultError
 import com.lyh.marvelexplorer.domain.core.ResultException
 import com.lyh.marvelexplorer.domain.core.ResultSuccess
 import com.lyh.marvelexplorer.domain.model.CharacterModel
 import com.lyh.marvelexplorer.feature.character.detail.CharacterViewModel
 import com.lyh.marvelexplorer.feature.character.model.CharacterUi
+import com.lyh.marvelexplorer.feature.character.nav.CharacterDestination
 import com.lyh.marvelexplorer.feature.character.util.CoroutinesTestExtension
 import com.lyh.marvelexplorer.feature.character.util.InstantExecutorExtension
 import com.lyh.marvelexplorer.feature.core.ResourceError
@@ -15,6 +18,7 @@ import com.lyh.marvelexplorer.feature.core.ResourceLoading
 import com.lyh.marvelexplorer.feature.core.ResourceSuccess
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -28,18 +32,20 @@ import java.util.concurrent.TimeoutException
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
 class CharacterViewModelTest {
 
-    private val characterUseCase = mockk<CharacterUseCase>()
-    private val squadCharacterUseCase = mockk<SquadCharacterUseCase>()
-    private lateinit var characterViewModel: CharacterViewModel
-
-    @BeforeEach
-    fun initVM() {
-        characterViewModel = CharacterViewModel(characterUseCase, squadCharacterUseCase)
+    private val characterId = 5
+    private val squadCharacterUseCase = mockk<SquadCharacterUseCase> {
+        every {isCharacterPresentInSquad(characterId)} returns flowOf(true)
+    }
+    private val savedStateHandle = mockk<SavedStateHandle> {
+        every {get<Int>(CharacterDestination.characterIdArg)} returns characterId
     }
 
     @Test
     fun `WHEN call recruitSquadCharacter THEN useCase#addSquadCharacter must be called once`() =
         runTest {
+            val characterUseCaseRelaxed = mockk<CharacterUseCase>(relaxed = true)
+            val characterViewModel = CharacterViewModel(savedStateHandle, characterUseCaseRelaxed, squadCharacterUseCase)
+
             characterViewModel.recruitSquadCharacter(createCharacterUi(5))
             coVerify(exactly = 1) { squadCharacterUseCase.addSquadCharacter(any()) }
         }
@@ -47,27 +53,22 @@ class CharacterViewModelTest {
     @Test
     fun `WHEN call fireSquadCharacter THEN useCase#deleteSquadCharacter must be called once`() =
         runTest {
+            val characterUseCaseRelaxed = mockk<CharacterUseCase>(relaxed = true)
+            val characterViewModel = CharacterViewModel(savedStateHandle, characterUseCaseRelaxed, squadCharacterUseCase)
+
             characterViewModel.fireSquadCharacter(createCharacterUi(5))
             coVerify(exactly = 1) { squadCharacterUseCase.deleteSquadCharacter(any()) }
         }
 
     @Test
     fun `WHEN get character by id succeed THEN get data`() = runTest {
-
-        val characterId = 5
+        val characterUseCase = mockk<CharacterUseCase> {
+            every {getCharacterById(characterId) } returns flowOf(ResultSuccess(createCharacterModel(characterId)))
+        }
+        val characterViewModel = CharacterViewModel(savedStateHandle, characterUseCase, squadCharacterUseCase)
         val character = createCharacterModel(characterId)
 
-        coEvery { characterUseCase.getCharacterById(characterId) } returns flowOf(
-            ResultSuccess(
-                character
-            )
-        )
-
         characterViewModel.character.test {
-            val resultLoading = awaitItem()
-            assertTrue(resultLoading is ResourceLoading)
-
-            characterViewModel.setCharacterId(characterId)
             val result = awaitItem()
             assertTrue(result is ResourceSuccess)
             val characterResult = result as ResourceSuccess
@@ -77,20 +78,25 @@ class CharacterViewModelTest {
     }
 
     @Test
-    fun `WHEN get character by id failed THEN get exception`() = runTest {
+    fun `WHEN init THEN get character return loading`() = runTest {
+        val characterUseCaseRelaxed = mockk<CharacterUseCase>(relaxed = true)
+        val characterViewModel = CharacterViewModel(savedStateHandle, characterUseCaseRelaxed, squadCharacterUseCase)
 
-
-        coEvery { characterUseCase.getCharacterById(any()) } returns flowOf(
-            ResultException(
-                TimeoutException()
-            )
-        )
 
         characterViewModel.character.test {
-            val resultLoading = awaitItem()
-            assertTrue(resultLoading is ResourceLoading)
+            val result = awaitItem()
+            assertTrue(result is ResourceLoading)
+        }
+    }
 
-            characterViewModel.setCharacterId(5)
+    @Test
+    fun `WHEN get character by id failed THEN get data`() = runTest {
+        val characterUseCase = mockk<CharacterUseCase> {
+            every {getCharacterById(characterId) } returns flowOf(ResultError(400, "Bad request"))
+        }
+        val characterViewModel = CharacterViewModel(savedStateHandle, characterUseCase, squadCharacterUseCase)
+
+        characterViewModel.character.test {
             val result = awaitItem()
             assertTrue(result is ResourceError)
         }

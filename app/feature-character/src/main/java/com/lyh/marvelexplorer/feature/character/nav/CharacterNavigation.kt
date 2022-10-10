@@ -33,8 +33,8 @@ object CharacterDestination : NavigationDestination {
      * Returns the characterId from a [NavBackStackEntry] after an character destination navigation call
      */
     fun fromNavArgs(entry: NavBackStackEntry): String {
-        val encodedId = entry.arguments?.getString(characterIdArg)!!
-        return Uri.decode(encodedId)
+        val encodedId = entry.arguments!!.getInt(characterIdArg)
+        return Uri.decode(encodedId.toString())
     }
 }
 
@@ -49,11 +49,10 @@ fun NavGraphBuilder.characterGraph(
     composable(
         route = CharacterDestination.route,
         arguments = listOf(
-            navArgument(CharacterDestination.characterIdArg) { type = NavType.StringType }
+            navArgument(CharacterDestination.characterIdArg) { type = NavType.IntType }
         )
     ) {
         CharacterRoute(
-            id = CharacterDestination.fromNavArgs(it),
             onBackClick = onBackClick)
     }    
 }

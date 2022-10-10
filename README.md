@@ -6,13 +6,11 @@ Application use data from [Marvel API](https://developer.marvel.com/documentatio
 
 ## _To Do improvements_
 
-- Add [Paging library](https://developer.android.com/topic/libraries/architecture/paging/v3-overview) for view and local datasource, by the way remote datasource is a JSon mock not paginated 😟
 - Add instrumented test on UI
 - Put `com.lyh.marvelexplorer.feature.character.util` classes in a new module `feature-code-test`
 - Create a custom Gradle Plugin for `java-library` module, and use it instead of `com.android.library` in modules don't have Android dependencies as `data-remote`, `data`, ...
 - Create a custom Gradle Plugin for `compose` module
 - Manage [large screen](https://developer.android.com/guide/topics/large-screens/get-started-with-large-screens) 
-- Use `SavedStateHandle` for passing parameters to screen whe [bug](https://github.com/InsertKoinIO/koin/issues/1350) fixed 
 - MinSDK set 24 instead of 21 because of this bug : [issue 171666278](https://issuetracker.google.com/issues/171666278) & [issue 195786468](https://issuetracker.google.com/issues/195786468). Investigate how to workaround this.
 - implements retry when network request failed
 - improve UI in landscape mode

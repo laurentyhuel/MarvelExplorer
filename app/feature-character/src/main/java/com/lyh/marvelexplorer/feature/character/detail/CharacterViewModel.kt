@@ -1,5 +1,6 @@
 package com.lyh.marvelexplorer.feature.character.detail
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lyh.marvelexplorer.domain.CharacterUseCase
@@ -11,41 +12,36 @@ import com.lyh.marvelexplorer.feature.character.R
 import com.lyh.marvelexplorer.feature.character.mapper.toSquadModel
 import com.lyh.marvelexplorer.feature.character.mapper.toUi
 import com.lyh.marvelexplorer.feature.character.model.CharacterUi
-import com.lyh.marvelexplorer.feature.character.model.SquadCharacterUi
+import com.lyh.marvelexplorer.feature.character.nav.CharacterDestination
 import com.lyh.marvelexplorer.feature.core.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class CharacterViewModel(
-//    savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle,
     private val characterUseCase: CharacterUseCase,
     private val squadCharacterUseCase: SquadCharacterUseCase
 ) : ViewModel() {
 
-    //TODO cannot use SavedStateHandle https://github.com/InsertKoinIO/koin/issues/1350
-//    private val characterId: String = checkNotNull(
-//        savedStateHandle[CharacterDestination.characterIdArg]
-//    )
-
-    private val characterIdTrigger: MutableSharedFlow<Int> = MutableSharedFlow(replay = 1)
+    private val characterId: Int =
+        checkNotNull(savedStateHandle[CharacterDestination.characterIdArg])
 
     val isCharacterPresentInSquad: StateFlow<Boolean?> =
-        characterIdTrigger.flatMapLatest { id ->
-            squadCharacterUseCase.isCharacterPresentInSquad(id)
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = null
-        )
+        squadCharacterUseCase.isCharacterPresentInSquad(characterId)
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = null
+            )
 
-    val character: StateFlow<Resource<CharacterUi>> = characterIdTrigger.flatMapLatest {
-        getCharacterFlow(it)
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = ResourceLoading()
-    )
+    val character: StateFlow<Resource<CharacterUi>> =
+        getCharacterFlow(characterId)
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = ResourceLoading()
+            )
 
     fun recruitSquadCharacter(characterUi: CharacterUi) = viewModelScope.launch {
         squadCharacterUseCase.addSquadCharacter(characterUi.toSquadModel())
@@ -55,40 +51,33 @@ class CharacterViewModel(
         squadCharacterUseCase.deleteSquadCharacter(characterUi.toSquadModel())
     }
 
-    fun setCharacterId(id: Int) = viewModelScope.launch {
-        characterIdTrigger.emit(id)
-    }
-
-    private fun getCharacterFlow(id: Int?): Flow<Resource<CharacterUi>> =
-        if (id == null) {
-            flowOf(ResourceLoading())
-        } else {
-            characterUseCase.getCharacterById(id)
-                .map {
-                    when (it) {
-                        is ResultSuccess -> {
-                            val character = it.data.toUi()
-                            ResourceSuccess(character)
-                        }
-                        is ResultError -> {
-                            Timber.e("Failed to getCharacter")
-                            ResourceError(
-                                errorMessage = ErrorMessage.ErrorMessageString(
-                                    it.message
-                                )
-                            )
-                        }
-                        is ResultException -> {
-                            Timber.e(it.throwable, "Error when getCharacter")
-                            ResourceError(
-                                errorMessage = ErrorMessage.ErrorMessageResource(
-                                    R.string.get_character_exception
-                                )
-                            )
-                        }
+    private fun getCharacterFlow(id: Int): Flow<Resource<CharacterUi>> =
+        characterUseCase.getCharacterById(id)
+            .map {
+                when (it) {
+                    is ResultSuccess -> {
+                        val character = it.data.toUi()
+                        ResourceSuccess(character)
                     }
-                }.onStart {
-                    emit(ResourceLoading())
+                    is ResultError -> {
+                        Timber.e("Failed to getCharacter")
+                        ResourceError(
+                            errorMessage = ErrorMessage.ErrorMessageString(
+                                it.message
+                            )
+                        )
+                    }
+                    is ResultException -> {
+                        Timber.e(it.throwable, "Error when getCharacter")
+                        ResourceError(
+                            errorMessage = ErrorMessage.ErrorMessageResource(
+                                R.string.get_character_exception
+                            )
+                        )
+                    }
                 }
-        }
+            }.onStart {
+                emit(ResourceLoading())
+            }
+
 }

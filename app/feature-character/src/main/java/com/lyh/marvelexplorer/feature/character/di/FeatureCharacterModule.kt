@@ -6,6 +6,6 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val featureCharacterModule = module {
-    viewModel { CharacterViewModel(get(), get()) }
+    viewModel { CharacterViewModel(get(), get(), get()) }
     viewModel { CharacterListViewModel(get(), get()) }
 }
